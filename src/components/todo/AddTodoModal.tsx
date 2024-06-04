@@ -11,15 +11,27 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { Textarea } from "../ui/textarea";
 import { FormEvent, useState } from "react";
+import { useAppDispatch } from "@/redux/hooks";
 import { DialogClose } from "@radix-ui/react-dialog";
+import { addTodo } from "@/redux/features/todoSlice";
 
 const AddTodoModal = () => {
 	const [task, setTask] = useState("");
 	const [description, setDescription] = useState("");
+	const dispatch = useAppDispatch();
 
 	const handleSubmit = (e: FormEvent) => {
 		e.preventDefault();
-		console.log({ task, description });
+
+		const randomId = Math.random().toString(36).substring(2, 35);
+
+		const tasksDetails = {
+			id: randomId,
+			title: task,
+			description,
+		};
+
+		dispatch(addTodo(tasksDetails));
 	};
 
 	return (
