@@ -1,23 +1,49 @@
 import Edit from "../icons/Edit";
 import Delete from "../icons/Delete";
 import { Button } from "../ui/button";
+import { Checkbox } from "../ui/checkbox";
 import { useAppDispatch } from "@/redux/hooks";
-import { removeTodo } from "@/redux/features/todoSlice";
+import { removeTodo, toggleComplete } from "@/redux/features/todoSlice";
 
 type TTodoCard = {
 	id: string;
-	description: string;
 	title: string;
+	priority: string;
+	description: string;
+	isCompleted?: boolean;
 };
 
-const TodoCard = ({ id, title, description }: TTodoCard) => {
+const TodoCard = ({
+	id,
+	title,
+	description,
+	priority,
+	isCompleted,
+}: TTodoCard) => {
 	const dispatch = useAppDispatch();
+
+	const toggleState = () => {
+		dispatch(toggleComplete(id));
+	};
 
 	return (
 		<div className="bg-white rounded-md flex items-center justify-between p-3 border">
-			<input className="cursor-pointer" type="checkbox" name="" id="" />
+			<Checkbox onClick={toggleState} className="text-blue-500" id="complete" />
 			<p className="font-semibold text-center">{title}</p>
-			{/* <p>Time</p> */}
+			<p
+				className={`font-semibold text-center capitalize ${
+					priority === "high"
+						? "text-green-500"
+						: priority === "medium"
+						? "text-yellow-600"
+						: "text-red-600"
+				}`}
+			>
+				{priority}
+			</p>
+			<p className={`${isCompleted ? "text-green-500" : "text-red-500"}`}>
+				{isCompleted ? "Done" : "Pending"}
+			</p>
 			<p className="text-center">{description}</p>
 			<div className="space-x-4">
 				<Button

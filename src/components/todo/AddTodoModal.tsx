@@ -9,6 +9,7 @@ import {
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
+import TodoPriority from "./TodoPriority";
 import { Textarea } from "../ui/textarea";
 import { FormEvent, useState } from "react";
 import { useAppDispatch } from "@/redux/hooks";
@@ -16,9 +17,10 @@ import { DialogClose } from "@radix-ui/react-dialog";
 import { addTodo } from "@/redux/features/todoSlice";
 
 const AddTodoModal = () => {
-	const [task, setTask] = useState("");
-	const [description, setDescription] = useState("");
 	const dispatch = useAppDispatch();
+	const [task, setTask] = useState("");
+	const [priority, setPriority] = useState("");
+	const [description, setDescription] = useState("");
 
 	const handleSubmit = (e: FormEvent) => {
 		e.preventDefault();
@@ -28,6 +30,7 @@ const AddTodoModal = () => {
 		const tasksDetails = {
 			id: randomId,
 			title: task,
+			priority,
 			description,
 		};
 
@@ -57,6 +60,10 @@ const AddTodoModal = () => {
 								className="col-span-3"
 								onBlur={(e) => setTask(e.target.value)}
 							/>
+						</div>
+						<div className="flex flex-col gap-2">
+							<Label htmlFor="priority">Priority</Label>
+							<TodoPriority setPriority={setPriority} />
 						</div>
 						<div className="flex flex-col gap-2">
 							<Label htmlFor="description">Description</Label>

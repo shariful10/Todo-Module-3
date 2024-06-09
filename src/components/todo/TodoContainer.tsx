@@ -5,7 +5,6 @@ import { useAppSelector } from "@/redux/hooks";
 
 const TodoContainer = () => {
 	const { todos } = useAppSelector((state) => state.todos);
-	console.log("🚀 ~ file: TodoContainer.tsx:8 ~ TodoContainer ~ todos:", todos);
 
 	return (
 		<div>
