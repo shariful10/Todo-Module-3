@@ -12,29 +12,33 @@ import { Button } from "../ui/button";
 import TodoPriority from "./TodoPriority";
 import { Textarea } from "../ui/textarea";
 import { FormEvent, useState } from "react";
-import { useAppDispatch } from "@/redux/hooks";
 import { DialogClose } from "@radix-ui/react-dialog";
-import { addTodo } from "@/redux/features/todoSlice";
+import { useAddTodosMutation } from "@/redux/api/api";
 
 const AddTodoModal = () => {
-	const dispatch = useAppDispatch();
 	const [task, setTask] = useState("");
 	const [priority, setPriority] = useState("");
 	const [description, setDescription] = useState("");
 
+	const [addTodo, { data, isLoading, isError, isSuccess, reset }] =
+		useAddTodosMutation();
+
+	console.log({ data, isLoading, isError, isSuccess });
+
 	const handleSubmit = (e: FormEvent) => {
 		e.preventDefault();
 
-		const randomId = Math.random().toString(36).substring(2, 35);
+		// const randomId = Math.random().toString(36).substring(2, 35);
 
 		const tasksDetails = {
-			id: randomId,
 			title: task,
 			priority,
 			description,
+			status: "pending",
 		};
 
-		dispatch(addTodo(tasksDetails));
+		addTodo(tasksDetails);
+		reset();
 	};
 
 	return (

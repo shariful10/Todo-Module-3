@@ -1,11 +1,12 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
-type TTodos = {
+export type TTodos = {
+	_id: string;
 	id: string;
 	title: string;
-	priority: string;
+	priority: "high" | "medium" | "low";
 	description: string;
-	isCompleted?: boolean;
+	status?: "pending" | "finished";
 };
 
 type TInitialState = {
@@ -17,9 +18,7 @@ const initialState: TInitialState = {
 };
 
 const sortTodos = (todos: TTodos[]) => {
-	return todos.sort((a, b) =>
-		a.isCompleted === b.isCompleted ? 0 : a.isCompleted ? 1 : -1
-	);
+	return todos.sort((a, b) => (a.status === b.status ? 0 : a.status ? 1 : -1));
 };
 
 const todoSlice = createSlice({
@@ -27,7 +26,7 @@ const todoSlice = createSlice({
 	initialState,
 	reducers: {
 		addTodo: (state, action: PayloadAction<TTodos>) => {
-			state.todos.push({ ...action.payload, isCompleted: false });
+			state.todos.push({ ...action.payload, status: "pending" });
 			state.todos = sortTodos(state.todos);
 		},
 		removeTodo: (state, action: PayloadAction<string>) => {
@@ -36,7 +35,7 @@ const todoSlice = createSlice({
 		toggleComplete: (state, action: PayloadAction<string>) => {
 			const task = state.todos.find((item) => item.id === action.payload);
 			if (task) {
-				task.isCompleted = !task.isCompleted;
+				task.status = task.status === "pending" ? "finished" : "pending";
 				state.todos = sortTodos(state.todos);
 			}
 		},

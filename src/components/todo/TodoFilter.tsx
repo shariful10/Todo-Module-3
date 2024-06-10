@@ -1,21 +1,23 @@
 import {
 	DropdownMenu,
-	DropdownMenuContent,
 	DropdownMenuLabel,
-	DropdownMenuRadioGroup,
+	DropdownMenuContent,
+	DropdownMenuTrigger,
 	DropdownMenuRadioItem,
 	DropdownMenuSeparator,
-	DropdownMenuTrigger,
+	DropdownMenuRadioGroup,
 } from "../ui/dropdown-menu";
-import { useState } from "react";
 import { Button } from "../ui/button";
 
-const TodoFilter = () => {
-	// const [position, setPosition] = useState("bottom");
-	const [priority, setPriority] = useState<string>("");
+type TPriority = {
+	priority: string;
+	setPriority: React.Dispatch<React.SetStateAction<string>>;
+};
 
+const TodoFilter = ({ priority, setPriority }: TPriority) => {
 	const handleFilter = (value: string) => {
 		setPriority(value);
+		console.log("value ", value);
 	};
 
 	return (
