@@ -18,6 +18,7 @@ export const baseApi = createApi({
 				url: "/task",
 				method: "POST",
 				body: data,
+				mode: "no-cors",
 			}),
 			invalidatesTags: ["todo"],
 		}),
