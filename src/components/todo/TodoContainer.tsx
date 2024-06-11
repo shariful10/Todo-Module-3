@@ -8,7 +8,6 @@ import { TTodos } from "@/redux/features/todoSlice";
 
 const TodoContainer = () => {
 	const [priority, setPriority] = useState<string>("");
-	// const { todos } = useAppSelector((state) => state.todos);
 	const { data: todos, isLoading, isError } = useGetTodosQuery(priority);
 
 	if (isLoading) {

@@ -8,6 +8,7 @@ import {
 } from "../ui/dialog";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
+import toast from "react-hot-toast";
 import { Button } from "../ui/button";
 import TodoPriority from "./TodoPriority";
 import { Textarea } from "../ui/textarea";
@@ -28,8 +29,6 @@ const AddTodoModal = () => {
 	const handleSubmit = (e: FormEvent) => {
 		e.preventDefault();
 
-		// const randomId = Math.random().toString(36).substring(2, 35);
-
 		const tasksDetails = {
 			title: task,
 			priority,
@@ -38,6 +37,7 @@ const AddTodoModal = () => {
 		};
 
 		addTodo(tasksDetails);
+		toast.success("Todo added successfully!");
 		reset();
 	};
 

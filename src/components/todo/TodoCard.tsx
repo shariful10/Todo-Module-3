@@ -1,15 +1,25 @@
 import Edit from "../icons/Edit";
+import toast from "react-hot-toast";
 import Delete from "../icons/Delete";
 import { Button } from "../ui/button";
 import { Checkbox } from "../ui/checkbox";
-import { useAppDispatch } from "@/redux/hooks";
-import { TTodos, removeTodo, toggleComplete } from "@/redux/features/todoSlice";
+import { TTodos } from "@/redux/features/todoSlice";
+import { useDeleteTodoMutation } from "@/redux/api/api";
 
 const TodoCard = ({ _id, title, priority, description, status }: TTodos) => {
-	const dispatch = useAppDispatch();
+	const [deleteTodo] = useDeleteTodoMutation();
 
 	const toggleState = () => {
-		dispatch(toggleComplete(_id));
+		// dispatch(toggleComplete(_id));
+	};
+
+	const handleDelete = async () => {
+		try {
+			await deleteTodo(_id).unwrap();
+			toast.success("Todo deleted successfully!");
+		} catch (err) {
+			toast.error("Failed to delete the todo!");
+		}
 	};
 
 	return (
@@ -43,10 +53,7 @@ const TodoCard = ({ _id, title, priority, description, status }: TTodos) => {
 			</p>
 			<p className="flex-[2]">{description}</p>
 			<div className="space-x-4">
-				<Button
-					onClick={() => dispatch(removeTodo(_id))}
-					className="bg-red-600 hover:bg-red-700"
-				>
+				<Button onClick={handleDelete} className="bg-red-600 hover:bg-red-700">
 					<Delete />
 				</Button>
 				<Button className="bg-[#5C53FE] hover:bg-blue-700">
