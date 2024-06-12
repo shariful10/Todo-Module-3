@@ -10,10 +10,14 @@ import {
 } from "../ui/select";
 
 type TTodoPriority = {
+	todoPriority?: string;
 	setPriority: Dispatch<React.SetStateAction<string>>;
 };
 
-const TodoPriority: React.FC<TTodoPriority> = ({ setPriority }) => {
+const TodoPriority: React.FC<TTodoPriority> = ({
+	setPriority,
+	todoPriority,
+}) => {
 	const [selectedPriority, setSelectedPriority] = useState<string>("");
 
 	const handlePriorityChange = (value: string) => {
@@ -24,7 +28,9 @@ const TodoPriority: React.FC<TTodoPriority> = ({ setPriority }) => {
 	return (
 		<Select onValueChange={handlePriorityChange}>
 			<SelectTrigger className="">
-				<SelectValue placeholder={selectedPriority || "Select Priority"} />
+				<SelectValue
+					placeholder={selectedPriority || todoPriority || "Select Priority"}
+				/>
 			</SelectTrigger>
 			<SelectContent>
 				<SelectGroup>

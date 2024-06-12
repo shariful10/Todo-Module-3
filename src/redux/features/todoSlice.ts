@@ -6,7 +6,7 @@ export type TTodos = {
 	title: string;
 	priority: "high" | "medium" | "low";
 	description: string;
-	status?: "pending" | "finished";
+	isCompleted?: boolean;
 };
 
 type TInitialState = {
@@ -18,7 +18,9 @@ const initialState: TInitialState = {
 };
 
 const sortTodos = (todos: TTodos[]) => {
-	return todos.sort((a, b) => (a.status === b.status ? 0 : a.status ? 1 : -1));
+	return todos.sort((a, b) =>
+		a.isCompleted === b.isCompleted ? 0 : a.isCompleted ? 1 : -1
+	);
 };
 
 const todoSlice = createSlice({
@@ -26,7 +28,7 @@ const todoSlice = createSlice({
 	initialState,
 	reducers: {
 		addTodo: (state, action: PayloadAction<TTodos>) => {
-			state.todos.push({ ...action.payload, status: "pending" });
+			state.todos.push({ ...action.payload, isCompleted: false });
 			state.todos = sortTodos(state.todos);
 		},
 		removeTodo: (state, action: PayloadAction<string>) => {
@@ -35,7 +37,7 @@ const todoSlice = createSlice({
 		toggleComplete: (state, action: PayloadAction<string>) => {
 			const task = state.todos.find((item) => item.id === action.payload);
 			if (task) {
-				task.status = task.status === "pending" ? "finished" : "pending";
+				task.isCompleted = !task.isCompleted;
 				state.todos = sortTodos(state.todos);
 			}
 		},

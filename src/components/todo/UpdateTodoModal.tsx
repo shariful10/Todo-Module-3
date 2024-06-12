@@ -6,51 +6,74 @@ import {
 	DialogContent,
 	DialogDescription,
 } from "../ui/dialog";
+import Edit from "../icons/Edit";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import toast from "react-hot-toast";
 import { Button } from "../ui/button";
 import TodoPriority from "./TodoPriority";
 import { Textarea } from "../ui/textarea";
-import { FormEvent, useState } from "react";
 import { DialogClose } from "@radix-ui/react-dialog";
-import { useAddTodosMutation } from "@/redux/api/api";
+import { FormEvent, useEffect, useState } from "react";
+import { useGetSingleTodosQuery, useUpdateTodoMutation } from "@/redux/api/api";
 
-const AddTodoModal = () => {
+type TTaskIdProps = {
+	taskId: string;
+	isCompleted: boolean | undefined;
+};
+
+const UpdateTodoModal = ({ taskId, isCompleted }: TTaskIdProps) => {
 	const [task, setTask] = useState("");
-	const [priority, setPriority] = useState("");
-	const [description, setDescription] = useState("");
+	const [updatedPriority, setUpdatedPriority] = useState("");
+	const [updatedDescription, setUpdatedDescription] = useState("");
 
-	const [addTodo, { reset }] = useAddTodosMutation();
+	const { data: todo } = useGetSingleTodosQuery(taskId);
+	const [updateTodo, { reset }] = useUpdateTodoMutation();
+
+	useEffect(() => {
+		if (todo) {
+			setTask(todo.title || "");
+			setUpdatedPriority(todo.priority || "");
+			setUpdatedDescription(todo.description || "");
+		}
+	}, [todo]);
 
 	const handleSubmit = (e: FormEvent) => {
 		e.preventDefault();
 
-		const tasksDetails = {
-			title: task,
-			priority,
-			description,
-			isCompleted: false,
+		// const tasksDetails = {
+		// 	title: task,
+		// 	priority,
+		// 	description,
+		// 	isCompleted: false,
+		// };
+
+		const options = {
+			id: taskId,
+			data: {
+				title: task,
+				priority: updatedPriority,
+				description: updatedDescription,
+				isCompleted,
+			},
 		};
 
-		addTodo(tasksDetails);
-		toast.success("Todo added successfully!");
+		updateTodo(options);
+		toast.success("Todo updated successfully!");
 		reset();
 	};
 
 	return (
 		<Dialog>
 			<DialogTrigger asChild>
-				<Button className="bg-primary-gradient hover:bg-secondary-gradient duration-500 font-semibold">
-					Add Todo
+				<Button className="bg-[#5C53FE] hover:bg-blue-700">
+					<Edit />
 				</Button>
 			</DialogTrigger>
 			<DialogContent className="sm:max-w-[425px]">
 				<DialogHeader>
-					<DialogTitle>Add Task</DialogTitle>
-					<DialogDescription>
-						Add your task that you want to finish.
-					</DialogDescription>
+					<DialogTitle>Update Task</DialogTitle>
+					<DialogDescription>Update your task.</DialogDescription>
 				</DialogHeader>
 				<form onSubmit={handleSubmit}>
 					<div className="grid gap-4 py-4">
@@ -59,12 +82,16 @@ const AddTodoModal = () => {
 							<Input
 								id="task"
 								className="col-span-3"
+								defaultValue={todo?.title}
 								onBlur={(e) => setTask(e.target.value)}
 							/>
 						</div>
 						<div className="flex flex-col gap-2">
 							<Label htmlFor="priority">Priority</Label>
-							<TodoPriority setPriority={setPriority} />
+							<TodoPriority
+								setPriority={setUpdatedPriority}
+								todoPriority={todo?.priority}
+							/>
 						</div>
 						<div className="flex flex-col gap-2">
 							<Label htmlFor="description">Description</Label>
@@ -72,7 +99,8 @@ const AddTodoModal = () => {
 								className="w-full"
 								id="description"
 								placeholder="Write description here."
-								onBlur={(e) => setDescription(e.target.value)}
+								defaultValue={todo?.description}
+								onBlur={(e) => setUpdatedDescription(e.target.value)}
 							/>
 						</div>
 					</div>
@@ -92,4 +120,4 @@ const AddTodoModal = () => {
 	);
 };
 
-export default AddTodoModal;
+export default UpdateTodoModal;

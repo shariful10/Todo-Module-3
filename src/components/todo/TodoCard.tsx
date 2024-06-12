@@ -1,16 +1,34 @@
-import Edit from "../icons/Edit";
 import toast from "react-hot-toast";
 import Delete from "../icons/Delete";
 import { Button } from "../ui/button";
 import { Checkbox } from "../ui/checkbox";
+import UpdateTodoModal from "./UpdateTodoModal";
 import { TTodos } from "@/redux/features/todoSlice";
-import { useDeleteTodoMutation } from "@/redux/api/api";
+import { useDeleteTodoMutation, useUpdateTodoMutation } from "@/redux/api/api";
 
-const TodoCard = ({ _id, title, priority, description, status }: TTodos) => {
+const TodoCard = ({
+	_id,
+	title,
+	priority,
+	description,
+	isCompleted,
+}: TTodos) => {
 	const [deleteTodo] = useDeleteTodoMutation();
+	const [updateTodo] = useUpdateTodoMutation();
 
 	const toggleState = () => {
-		// dispatch(toggleComplete(_id));
+		const options = {
+			id: _id,
+			data: {
+				title,
+				priority,
+				description,
+				isCompleted: !isCompleted,
+			},
+		};
+
+		updateTodo(options);
+		toast.success("Task status updated successfully!");
 	};
 
 	const handleDelete = async () => {
@@ -29,6 +47,7 @@ const TodoCard = ({ _id, title, priority, description, status }: TTodos) => {
 					onClick={toggleState}
 					className="text-blue-500 flex-1"
 					id="complete"
+					defaultChecked={isCompleted}
 				/>
 			</div>
 			<p className="font-semibold flex-1 pl-7">{title}</p>
@@ -45,20 +64,16 @@ const TodoCard = ({ _id, title, priority, description, status }: TTodos) => {
 				<p className="capitalize">{priority}</p>
 			</div>
 			<p
-				className={`${
-					status === "finished" ? "text-green-500" : "text-red-500"
-				} flex-1`}
+				className={`${isCompleted ? "text-green-500" : "text-red-500"} flex-1`}
 			>
-				{status === "finished" ? "Finished" : "Pending"}
+				{isCompleted ? "Done" : "Pending"}
 			</p>
 			<p className="flex-[2]">{description}</p>
 			<div className="space-x-4">
 				<Button onClick={handleDelete} className="bg-red-600 hover:bg-red-700">
 					<Delete />
 				</Button>
-				<Button className="bg-[#5C53FE] hover:bg-blue-700">
-					<Edit />
-				</Button>
+				<UpdateTodoModal taskId={_id} isCompleted={isCompleted} />
 			</div>
 		</div>
 	);
