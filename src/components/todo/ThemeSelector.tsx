@@ -42,6 +42,8 @@ const ThemeSelector = () => {
 						? "bg-white"
 						: theme === "system" && myTheme === "dark"
 						? "bg-[#0D1117] text-gray-300"
+						: theme === "system" && myTheme === "light"
+						? "bg-white"
 						: ""
 				}`}
 			>
