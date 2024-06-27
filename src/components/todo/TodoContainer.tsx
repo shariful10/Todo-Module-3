@@ -1,13 +1,16 @@
+import { myTheme } from "@/App";
 import { useState } from "react";
 import TodoCard from "./TodoCard";
 import TodoFilter from "./TodoFilter";
 import { Loader } from "../ui/Loader";
 import AddTodoModal from "./AddTodoModal";
+import { useAppSelector } from "@/redux/hooks";
 import { useGetTodosQuery } from "@/redux/api/api";
 import { TTodos } from "@/redux/features/todoSlice";
 
 const TodoContainer = () => {
 	const [priority, setPriority] = useState<string>("");
+	const { theme } = useAppSelector((state) => state.theme);
 	const { data: todos, isLoading, isError } = useGetTodosQuery(priority);
 
 	if (isLoading) {
@@ -32,7 +35,17 @@ const TodoContainer = () => {
 			</div>
 			<div className="bg-primary-gradient w-full h-full rounded-xl p-[5px]">
 				{todos?.data?.length > 0 ? (
-					<div className="bg-white p-5 w-full h-full rounded-lg space-y-3 o">
+					<div
+						className={`bg-white p-5 w-full h-full rounded-lg space-y-3 ${
+							theme === "dark"
+								? "bg-[#0D1117] text-gray-300"
+								: theme === "light"
+								? ""
+								: theme === "system" && myTheme === "dark"
+								? "bg-[#0D1117] text-gray-300"
+								: ""
+						}`}
+					>
 						{todos?.data?.map((item: TTodos) => (
 							<TodoCard key={item._id} {...item} />
 						))}

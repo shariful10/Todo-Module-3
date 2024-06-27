@@ -2,9 +2,11 @@ import toast from "react-hot-toast";
 import Delete from "../icons/Delete";
 import { Button } from "../ui/button";
 import { Checkbox } from "../ui/checkbox";
+import { useAppSelector } from "@/redux/hooks";
 import UpdateTodoModal from "./UpdateTodoModal";
 import { TTodos } from "@/redux/features/todoSlice";
 import { useDeleteTodoMutation, useUpdateTodoMutation } from "@/redux/api/api";
+import { myTheme } from "@/App";
 
 const TodoCard = ({
 	_id,
@@ -15,6 +17,7 @@ const TodoCard = ({
 }: TTodos) => {
 	const [deleteTodo] = useDeleteTodoMutation();
 	const [updateTodo] = useUpdateTodoMutation();
+	const { theme } = useAppSelector((state) => state.theme);
 
 	const toggleState = () => {
 		const options = {
@@ -41,11 +44,29 @@ const TodoCard = ({
 	};
 
 	return (
-		<div className="bg-white rounded-md flex items-center justify-between p-3 border">
+		<div
+			className={`rounded-md flex items-center justify-between p-3 border ${
+				theme === "dark"
+					? "bg-[#0D1117] text-gray-300"
+					: theme === "light"
+					? "bg-white"
+					: theme === "system" && myTheme === "dark"
+					? "bg-[#0D1117] text-gray-300"
+					: "bg-white"
+			}`}
+		>
 			<div className="">
 				<Checkbox
 					onClick={toggleState}
-					className="text-blue-500 flex-1"
+					className={`text-blue-500 flex-1 ${
+						theme === "dark"
+							? "bg-white"
+							: theme === "light"
+							? ""
+							: theme === "system" && myTheme === "dark"
+							? "bg-white"
+							: ""
+					}`}
 					id="complete"
 					defaultChecked={isCompleted}
 				/>
